@@ -28,10 +28,7 @@ const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 // Create the default UI:
 const ui = H.ui.UI.createDefault(map, defaultLayers);
 const mapSettingsControl = ui.getControl("mapsettings");
-mapSettingsControl.setVisibility(false)
-
-// Enable dynamic resizing of the map, based on the current size of the enclosing container
-window.addEventListener('resize', () => map.getViewPort().resize());
+mapSettingsControl.setVisibility(false);
 
 // Get ticketmaster api data and store to sessionStorage for future use.
 // Session storage because there is no limit to storage and will clear out old events in different sessions.
@@ -78,16 +75,24 @@ function displayVenues(eventData) {
     };
     // Center map based off of current event coordinates
     map.setCenter(eventCoordinates);
-
+    console.log(eventData);
     // Create an list of information.
     var eventList = document.getElementById("eventList");
     var li = document.createElement("li");
-    li.setAttribute("class", "list-item is-full")
+    li.setAttribute("class", "button is-primary is-outlined")
+    li.setAttribute("id", eventData.id)
     li.textContent = eventData.name + " at " + eventData._embedded.venues[0].name;
     eventList.appendChild(li);
+
+    // Create an event listener to create map bubble instead of creating a map bubble for all events
+    li.addEventListener("click", () => {
+        displayMapBubble(eventData)
+        localStorage.setItem(eventData.id, JSON.stringify(eventData))
+    });
 }
 
 function displayMapBubble(eventData) {
+
     const eventCoordinates = {
         lat: eventData._embedded.venues[0].location.latitude,
         lng: eventData._embedded.venues[0].location.longitude
@@ -95,10 +100,11 @@ function displayMapBubble(eventData) {
     map.setCenter(eventCoordinates);
 
     // Create the HTML content for the info bubble
-    const content = '<div style="width:200px">' +
-        '<h3>Group:' + eventData.name + '</h3>' +
-        '<p>Location: ' + eventData._embedded.venues[0].name + '</p>' +
-        '<p>Date: ' + eventData.dates.start.localDate + '</p>' +
+    const content = '<div class="has-text-left" style="width:230px">' +
+        '<h3><strong>Group:</strong> ' + eventData.name + '</h3>' +
+        '<p><strong>Location:</strong> ' + eventData._embedded.venues[0].name + '</p>' +
+        '<p><strong>Date:</strong> ' + eventData.dates.start.localDate + '</p>' +
+        '<p><a href="' + eventData.url + '">Link to Event</a></p>' +
         '</div>';
 
     // Create an info bubble at the Spire of Dublin location with the HTML content
@@ -160,7 +166,8 @@ $("#cityList").autocomplete({
     delay: 300
 });
 
-
+// Search for events using the ticketmasterAPI,
+// User city input from browser is converted to latlong location data for better UX
 async function searchForEvents(event, search) {
     if (event) {
         event.preventDefault();
@@ -173,7 +180,6 @@ async function searchForEvents(event, search) {
         return;
     }
 
-    // Check to see if location ticketmaster data exists before pulling api again.
 
     try {
         clearEventList();
@@ -181,11 +187,11 @@ async function searchForEvents(event, search) {
         startClustering(ticketmasterData._embedded.events);
         ticketmasterData._embedded.events.forEach(data => {
             displayVenues(data);
-            displayMapBubble(data);
         });
     }
     catch (err) {
         console.log(err);
+
     }
 
 }
@@ -213,4 +219,13 @@ function startClustering(events) {
     // To make objects from clustering provider visible,
     // we need to add our layer to the map
     map.addLayer(clusteringLayer);
+}
+
+if (localStorage.length > 0) {
+    for (const item in localStorage) {
+        var data = JSON.parse(localStorage.getItem(item));
+        if (data) {
+            displayVenues(data);
+        }
+    }
 }
