@@ -1,17 +1,126 @@
 var searchInput = document.querySelector("#cityList");
 
-// Get ticketmaster api data and store to localstorage for future use.
+var platform = new H.service.Platform({
+    'apikey': hereAPI
+});
+
+// Obtain the default map types from the platform object:
+const defaultLayers = platform.createDefaultLayers();
+
+// Instantiate (and display) a map:
+const map = new H.Map(
+    document.getElementById("mapContainer"),
+    // Center the map on Dublin, Republic of Ireland, with the zoom level of 10:
+    defaultLayers.vector.normal.map, {
+    zoom: 14,
+    center: {
+        lat: 40.76,
+        lng: -111.89
+    }
+});
+// add a resize listener to make sure that the map occupies the whole container
+window.addEventListener('resize', () => map.getViewPort().resize());
+
+
+// MapEvents enables the event system.
+// The behavior variable implements default interactions for pan/zoom (also on mobile touch environments).
+const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+// Create the default UI:
+const ui = H.ui.UI.createDefault(map, defaultLayers);
+const mapSettingsControl = ui.getControl("mapsettings");
+mapSettingsControl.setVisibility(false)
+
+// Enable dynamic resizing of the map, based on the current size of the enclosing container
+window.addEventListener('resize', () => map.getViewPort().resize());
+
+// Get ticketmaster api data and store to sessionStorage for future use.
+// Session storage because there is no limit to storage and will clear out old events in different sessions.
 async function getEventData(location) {
-    if (localStorage.getItem(location)) {
-        return await JSON.parse(localStorage.getItem(location))
+    // Sources available are: Ticketmaster, Universe, FrontGate Tickets and Ticketmaster Resale (TMR)
+    // Multiple, comma separated values are OK.
+    const eventsURI = "https://app.ticketmaster.com/discovery/v2/events.json";
+    const eventClassification = "music";
+    const source = "Ticketmaster";
+    const radius = 100;
+    const unit = "miles";
+    if (sessionStorage.getItem(location)) {
+        console.log("Found Data in sessionStorage");
+        return await JSON.parse(sessionStorage.getItem(location));
     } else {
-        var response = await fetch("https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&latlong=" + location + "&apikey=" + ticketmasterAPI);
+        var fetchRequest = `${eventsURI}?classificationName=${eventClassification}&latlong=${location}&source=${source}&radius=${radius}&unit=${unit}&apikey=${ticketmasterAPI}`;
+        var response = await fetch(fetchRequest);
         var data = await response.json();
-        localStorage.setItem(location, JSON.stringify(data));
+        sessionStorage.setItem(location, JSON.stringify(data));
         return data;
     }
-
 }
+
+// Get ticketmaster venue data and store to localStorage for future use.
+// Venue data should rarely if ever change making for less api use on the user side
+async function getVenueData(venueLink) {
+    if (localStorage.getItem(venueLink)) {
+        console.log(JSON.parse(localStorage.getItem(venueLink)));
+        return await JSON.parse(localStorage.getItem(venueLink));
+    } else {
+        var fetchRequest = `https://app.ticketmaster.com/${venueLink}&apikey=${ticketmasterAPI}`;
+        console.log(fetchRequest);
+        var response = await fetch(fetchRequest);
+        var data = await response.json();
+        localStorage.setItem(venueLink, JSON.stringify(data));
+        return data;
+    }
+}
+
+function displayVenues(eventData) {
+    const eventCoordinates = {
+        lat: eventData._embedded.venues[0].location.latitude,
+        lng: eventData._embedded.venues[0].location.longitude
+    };
+    // Center map based off of current event coordinates
+    map.setCenter(eventCoordinates);
+
+    // Create an list of information.
+    var eventList = document.getElementById("eventList");
+    var li = document.createElement("li");
+    li.setAttribute("class", "list-item is-full")
+    li.textContent = eventData.name + " at " + eventData._embedded.venues[0].name;
+    eventList.appendChild(li);
+}
+
+function displayMapBubble(eventData) {
+    const eventCoordinates = {
+        lat: eventData._embedded.venues[0].location.latitude,
+        lng: eventData._embedded.venues[0].location.longitude
+    };
+    map.setCenter(eventCoordinates);
+
+    // Create the HTML content for the info bubble
+    const content = '<div style="width:200px">' +
+        '<h3>Group:' + eventData.name + '</h3>' +
+        '<p>Location: ' + eventData._embedded.venues[0].name + '</p>' +
+        '<p>Date: ' + eventData.dates.start.localDate + '</p>' +
+        '</div>';
+
+    // Create an info bubble at the Spire of Dublin location with the HTML content
+    const infoBubble = new H.ui.InfoBubble(eventCoordinates, {
+        content
+    });
+
+    // Add the info bubble to the UI
+    ui.addBubble(infoBubble);
+}
+
+function clearEventList() {
+    var eventList = document.getElementById("eventList");
+
+    var event = eventList.firstElementChild;
+    while (event) {
+        // console.log(`Event ${event} deleted`);
+        eventList.removeChild(event);
+        event = eventList.firstElementChild;
+    }
+}
+
 
 // JQuery AutoComplete
 $("#cityList").autocomplete({
@@ -58,29 +167,50 @@ async function searchForEvents(event, search) {
     }
 
     // Get input value and reset to clear form
-    var latlon = search;
+    var latLong = search;
     searchInput.value = "";
-    if (latlon === "") {
+    if (latLong === "") {
         return;
     }
 
     // Check to see if location ticketmaster data exists before pulling api again.
-    var ticketmasterData = await getEventData(latlon);
 
-    // User probably entered nothing("")
-    if (!ticketmasterData) {
-        console.log("No ticketmasterAPI Data?");
-        return;
+    try {
+        clearEventList();
+        var ticketmasterData = await getEventData(latLong);
+        startClustering(ticketmasterData._embedded.events);
+        ticketmasterData._embedded.events.forEach(data => {
+            displayVenues(data);
+            displayMapBubble(data);
+        });
+    }
+    catch (err) {
+        console.log(err);
     }
 
-    var eventList = document.getElementById("eventList");
+}
 
-    // Iterate and render each day for weather data
-    ticketmasterData._embedded.events.forEach(data => {
-        // console.log(data);
-        var li = document.createElement("li");
-        li.textContent = data.name;
-        eventList.appendChild(li);
+function startClustering(events) {
+    // First we need to create an array of DataPoint objects,
+    // for the ClusterProvider
+    var dataPoints = events.map(function (event) {
+        return new H.clustering.DataPoint(event._embedded.venues[0].location.latitude, event._embedded.venues[0].location.longitude);
     });
 
+    // Create a clustering provider with custom options for clustering the input
+    var clusteredDataProvider = new H.clustering.Provider(dataPoints, {
+        clusteringOptions: {
+            // Maximum radius of the neighborhood
+            eps: 32,
+            // minimum weight of points required to form a cluster
+            minWeight: 1
+        }
+    });
+
+    // Create a layer tha will consume objects from our clustering provider
+    var clusteringLayer = new H.map.layer.ObjectLayer(clusteredDataProvider);
+
+    // To make objects from clustering provider visible,
+    // we need to add our layer to the map
+    map.addLayer(clusteringLayer);
 }

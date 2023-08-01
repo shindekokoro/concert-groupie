@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" class="has-background-black">
 
 <head>
     <meta charset="UTF-8" />
@@ -7,27 +7,55 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css"
         integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
+        integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+
+    <!-- HereMap JS -->
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-clustering.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <title>Concert Groupie</title>
 </head>
 
-<body>
-    <form class="ui-widget" id="citySearch">
-        <label for="citySearch">
-            <h2>Search for a City:</h2>
-        </label>
-        <input id="cityList" placeholder="Enter name of city." />
-    </form>
+<body class="has-text-white">
+    <header class="container is-primary is-centered has-text-centered">
+        <img src="./assets/images/logo.png" alt="ticket stub with the name of the website -- Concert Groupie" />
+    </header>
+    <main class="container is-mobile has-text-centered">
+        <div class="columns">
+            <div id="mapContainer" class="column is-full">
+            </div>
+            <div class="column is-one-third is-overlay">
+                <form class="is-primary" id="citySearch">
+                    <input class="input is-rounded has-text-black" id="cityList" placeholder="Search for a city." />
+                </form>
+            </div>
+            <div class="column is-one-third has-text-left">
+                <ul class="list" id="eventList">
+                </ul>
+            </div>
+        </div>
 
-    <ul id="eventList">
 
-    </ul>
+    </main>
+    <footer class="footer has-background-grey-dark has-text-right">
+        <div class="content">
+            &copy; Brian Whisler,
+            Brittany Brimley,
+            Nick Whitaker,
+            Tomas Merniez
+        </div>
 
+    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"
         integrity="sha512-57oZ/vW8ANMjR/KQ6Be9v/+/h6bq9/l3f0Oc7vn6qMqyhvPd1cvKBRWWpzu0QoneImqr2SkmO4MSqU+RpHom3Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <script src="./assets/js/config.js"></script>
     <script src="./assets/js/script.js"></script>
 </body>
