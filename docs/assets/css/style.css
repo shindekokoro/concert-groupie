@@ -1,0 +1,67 @@
+:root {
+    --map-width: 740px;
+    --map-height: 480px;
+}
+
+/* Make sure sticky footer at bottom of page, bulma does not have built in */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    margin-top: 10px;
+    padding: 1.2rem 1rem 1rem !important;
+}
+
+/* Style Map Container for responsive mobile/desktop displays */
+
+#mapContainer {
+    width: var(--map-width);
+    height: var(--map-height);
+}
+
+
+
+/* Tablet */
+@media screen and (max-width:930px) {
+    #mapContainer {
+        width: calc(var(--map-width));
+        height: calc(var(--map-height));
+    }
+
+    input {
+        margin-top: 8px;
+    }
+}
+
+/* Odd Size */
+@media screen and (max-width:630px) {
+    #mapContainer {
+        width: calc(var(--map-width)/1.4);
+        height: calc(var(--map-height));
+    }
+
+    input {
+        margin-top: 5px;
+    }
+
+}
+
+/* Mobile */
+@media screen and (max-width:430px) {
+    #mapContainer {
+        width: calc(var(--map-width)/1.9) !important;
+        height: calc(var(--map-height)) !important;
+    }
+
+    input {
+        margin-top: 5px;
+    }
+
+}
