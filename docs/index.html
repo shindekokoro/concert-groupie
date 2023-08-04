@@ -28,13 +28,13 @@
         <img src="./assets/images/logo.png" alt="ticket stub with the name of the website -- Concert Groupie" />
     </header>
     <main class="container is-mobile has-text-centered">
+        <div id="searchContainer" class="column is-one-third is-full-mobile is-outlined">
+            <form class="is-primary" id="citySearch">
+                <input class="input is-rounded has-text-black" id="cityList" placeholder="Search for a city." />
+            </form>
+        </div>
         <div class="columns">
             <div id="mapContainer" class="column is-full">
-            </div>
-            <div class="column is-one-third is-half-mobile is-overlay">
-                <form class="is-primary" id="citySearch">
-                    <input class="input is-rounded has-text-black" id="cityList" placeholder="Search for a city." />
-                </form>
             </div>
             <div class="column is-one-third is-full-mobile">
                 <ul id="eventList" class="buttons are-small are-fullwidth">

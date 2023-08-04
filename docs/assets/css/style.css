@@ -14,13 +14,22 @@ main {
     flex: 1;
 }
 
+.is-outlined {
+    border: 1px solid #00d1b2;
+}
+
 footer {
     margin-top: 10px;
     padding: 1.2rem 1rem 1rem !important;
 }
 
 /* Style Map Container for responsive mobile/desktop displays */
+#searchContainer {
+    width: 716px;
+    margin-top: 5rem;
+}
 
+/* Style Map Container for responsive mobile/desktop displays */
 #mapContainer {
     width: var(--map-width);
     height: var(--map-height);
@@ -42,6 +51,10 @@ footer {
 
 /* Odd Size */
 @media screen and (max-width:630px) {
+    #searchContainer {
+        width: 505px;
+        margin-top: 5rem;
+    }
     #mapContainer {
         width: calc(var(--map-width)/1.4);
         height: calc(var(--map-height));
@@ -55,6 +68,10 @@ footer {
 
 /* Mobile */
 @media screen and (max-width:430px) {
+    #searchContainer {
+        width: 365px;
+        margin-top: 5rem;
+    }
     #mapContainer {
         width: calc(var(--map-width)/1.9) !important;
         height: calc(var(--map-height)) !important;
