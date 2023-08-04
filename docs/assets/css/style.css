@@ -35,15 +35,12 @@ footer {
     height: var(--map-height);
 }
 
-
-
 /* Tablet */
 @media screen and (max-width:930px) {
     #mapContainer {
         width: calc(var(--map-width));
         height: calc(var(--map-height));
     }
-
     input {
         margin-top: 8px;
     }
@@ -59,11 +56,9 @@ footer {
         width: calc(var(--map-width)/1.4);
         height: calc(var(--map-height));
     }
-
     input {
         margin-top: 5px;
     }
-
 }
 
 /* Mobile */
@@ -76,9 +71,7 @@ footer {
         width: calc(var(--map-width)/1.9) !important;
         height: calc(var(--map-height)) !important;
     }
-
     input {
         margin-top: 5px;
     }
-
 }

@@ -1,5 +1,4 @@
 var searchInput = document.querySelector("#cityList");
-
 var platform = new H.service.Platform({
     'apikey': hereAPI
 });
@@ -20,7 +19,6 @@ const map = new H.Map(
 });
 // add a resize listener to make sure that the map occupies the whole container
 window.addEventListener('resize', () => map.getViewPort().resize());
-
 
 // MapEvents enables the event system.
 // The behavior variable implements default interactions for pan/zoom (also on mobile touch environments).
@@ -52,22 +50,8 @@ async function getEventData(location) {
     }
 }
 
-// Get ticketmaster venue data and store to localStorage for future use.
-// Venue data should rarely if ever change making for less api use on the user side
-async function getVenueData(venueLink) {
-    if (localStorage.getItem(venueLink)) {
-        console.log(JSON.parse(localStorage.getItem(venueLink)));
-        return await JSON.parse(localStorage.getItem(venueLink));
-    } else {
-        var fetchRequest = `https://app.ticketmaster.com/${venueLink}&apikey=${ticketmasterAPI}`;
-        console.log(fetchRequest);
-        var response = await fetch(fetchRequest);
-        var data = await response.json();
-        localStorage.setItem(venueLink, JSON.stringify(data));
-        return data;
-    }
-}
-
+// Display venues will display an unordered list of events/venues on the page
+// Will also set center of map to even coordinates
 function displayVenues(eventData) {
     const eventCoordinates = {
         lat: eventData._embedded.venues[0].location.latitude,
@@ -75,7 +59,7 @@ function displayVenues(eventData) {
     };
     // Center map based off of current event coordinates
     map.setCenter(eventCoordinates);
-    console.log(eventData);
+    // console.log(eventData);
     // Create an list of information.
     var eventList = document.getElementById("eventList");
     var li = document.createElement("li");
@@ -91,8 +75,8 @@ function displayVenues(eventData) {
     });
 }
 
+// This function displays info pop up bubble on the map
 function displayMapBubble(eventData) {
-
     const eventCoordinates = {
         lat: eventData._embedded.venues[0].location.latitude,
         lng: eventData._embedded.venues[0].location.longitude
@@ -117,9 +101,9 @@ function displayMapBubble(eventData) {
     ui.addBubble(infoBubble);
 }
 
+// This function will clear the unordered list to allow for a new list to be repopulated
 function clearEventList() {
     var eventList = document.getElementById("eventList");
-
     var event = eventList.firstElementChild;
     while (event) {
         // console.log(`Event ${event} deleted`);
@@ -127,7 +111,6 @@ function clearEventList() {
         event = eventList.firstElementChild;
     }
 }
-
 
 // JQuery AutoComplete
 $("#cityList").autocomplete({
@@ -180,8 +163,6 @@ async function searchForEvents(event, search) {
     if (latLong === "") {
         return;
     }
-
-
     try {
         clearEventList();
         var ticketmasterData = await getEventData(latLong);
@@ -192,19 +173,15 @@ async function searchForEvents(event, search) {
     }
     catch (err) {
         console.log(err);
-
     }
-
 }
 
+// Create a heatmap/cluster of events on map
 function startClustering(events) {
-    // First we need to create an array of DataPoint objects,
-    // for the ClusterProvider
     var dataPoints = events.map(function (event) {
         return new H.clustering.DataPoint(event._embedded.venues[0].location.latitude, event._embedded.venues[0].location.longitude);
     });
 
-    // Create a clustering provider with custom options for clustering the input
     var clusteredDataProvider = new H.clustering.Provider(dataPoints, {
         clusteringOptions: {
             // Maximum radius of the neighborhood
