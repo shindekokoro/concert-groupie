@@ -105,6 +105,7 @@ function displayMapBubble(eventData) {
         '<p><strong>Location:</strong> ' + eventData._embedded.venues[0].name + '</p>' +
         '<p><strong>Date:</strong> ' + eventData.dates.start.localDate + '</p>' +
         '<p><a href="' + eventData.url + '">Link to Event</a></p>' +
+        '<img src="' + eventData.images[0].url + '">'
         '</div>';
 
     // Create an info bubble at the Spire of Dublin location with the HTML content
