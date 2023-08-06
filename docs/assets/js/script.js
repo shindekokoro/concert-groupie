@@ -63,9 +63,9 @@ function displayVenues(eventData) {
     // Create an list of information.
     var eventList = document.getElementById("eventList");
     var li = document.createElement("li");
-    li.setAttribute("class", "button is-primary is-outlined")
+    li.setAttribute("class", "button is-primary is-outlined has-text-left py-5 is-fullwidth")
     li.setAttribute("id", eventData.id)
-    li.textContent = eventData.name + " at " + eventData._embedded.venues[0].name;
+    li.innerHTML = eventData.name + " <br /> " + eventData._embedded.venues[0].name;
     eventList.appendChild(li);
 
     // Create an event listener to create map bubble instead of creating a map bubble for all events
