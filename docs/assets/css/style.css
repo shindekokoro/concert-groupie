@@ -14,6 +14,15 @@ main {
     flex: 1;
 }
 
+.button.has-text-left {
+    justify-content: flex-start;
+
+}
+
+.button.has-text-right {
+    justify-content: flex-end;
+}
+
 .is-outlined {
     border: 1px solid #00d1b2;
 }
@@ -26,7 +35,7 @@ footer {
 /* Style Map Container for responsive mobile/desktop displays */
 #searchContainer {
     width: 716px;
-    margin-top: 5rem;
+
 }
 
 /* Style Map Container for responsive mobile/desktop displays */
