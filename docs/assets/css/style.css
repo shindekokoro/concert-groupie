@@ -59,7 +59,6 @@ footer {
 @media screen and (max-width:630px) {
     #searchContainer {
         width: 505px;
-        margin-top: 5rem;
     }
     #mapContainer {
         width: calc(var(--map-width)/1.4);
@@ -75,7 +74,6 @@ footer {
 @media screen and (max-width:430px) {
     #searchContainer {
         width: 365px;
-        margin-top: 5rem;
     }
     #mapContainer {
         width: calc(var(--map-width)/1.9) !important;
