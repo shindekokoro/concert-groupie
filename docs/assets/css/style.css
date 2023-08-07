@@ -35,7 +35,6 @@ footer {
 /* Style Map Container for responsive mobile/desktop displays */
 #searchContainer {
     width: 716px;
-
 }
 
 /* Style Map Container for responsive mobile/desktop displays */
@@ -49,6 +48,7 @@ footer {
     #mapContainer {
         width: calc(var(--map-width));
         height: calc(var(--map-height));
+        margin-bottom: 80px;
     }
     input {
         margin-top: 8px;
@@ -64,6 +64,7 @@ footer {
     #mapContainer {
         width: calc(var(--map-width)/1.4);
         height: calc(var(--map-height));
+        margin-bottom: 150px;
     }
     input {
         margin-top: 5px;
