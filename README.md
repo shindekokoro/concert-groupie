@@ -3,8 +3,9 @@ This WebApplication helps users find concerts near a specific location and put t
 
 ## Link/Preview
 https://shindekokoro.github.io/concert-groupie/
-![preview1](https://github.com/shindekokoro/concert-groupie/assets/135496106/30990fda-73eb-4714-809b-85ca5bff2951)
-![preview2](https://github.com/shindekokoro/concert-groupie/assets/135496106/47ff22f9-003e-44b6-ac95-ea7500d103cc)
+![image](https://github.com/shindekokoro/concert-groupie/assets/135679785/ed4f9ec9-5211-4492-be68-e51bc10a48e8)
+
+![image](https://github.com/shindekokoro/concert-groupie/assets/135679785/ef7bb9d7-cc7c-43b7-959b-b872fdf5bf0a)
 
 ## Legal
 - Here API map key used to show concert locations
