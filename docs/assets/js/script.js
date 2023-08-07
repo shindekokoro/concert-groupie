@@ -77,11 +77,12 @@ function displayVenues(eventData) {
 
 // This function displays info pop up bubble on the map
 function displayMapBubble(eventData) {
+    var lat = parseFloat(eventData._embedded.venues[0].location.latitude);
+    var long = eventData._embedded.venues[0].location.longitude
     const eventCoordinates = {
-        lat: eventData._embedded.venues[0].location.latitude,
-        lng: eventData._embedded.venues[0].location.longitude
+        lat: lat,
+        lng: long,
     };
-    map.setCenter(eventCoordinates);
 
     // Create the HTML content for the info bubble
     const content = '<div class="has-text-left" style="width:230px">' +
@@ -99,6 +100,9 @@ function displayMapBubble(eventData) {
 
     // Add the info bubble to the UI
     ui.addBubble(infoBubble);
+    // Moves latitude for map center accounting for info bubble
+    eventCoordinates.lat = eventCoordinates.lat + .0097;
+    map.setCenter(eventCoordinates);
 }
 
 // This function will clear the unordered list to allow for a new list to be repopulated
